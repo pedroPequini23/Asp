@@ -107,6 +107,7 @@ NomeCartao varchar(60) null,         -- Nome no cartão (se for pagamento com ca
 BandeiraCartao varchar(30) null,     -- Bandeira do cartão (Visa, MasterCard, etc.)
 NumeroCartao numeric(16) null,       -- Número do cartão (masculino ou criptografado)
 CVV numeric(3) null,                -- CVV do cartão
+DataValidade char(5) null,
 foreign key (PedidoId) references tbPedido(PedidoId)
 );
 
@@ -567,7 +568,8 @@ CREATE PROCEDURE spInsertPagamento (
     IN pNomeCartao VARCHAR(60),
     IN pBandeiraCartao VARCHAR(30),
     IN pNumeroCartao NUMERIC(16),
-    IN pCVV NUMERIC(3)
+    IN pCVV NUMERIC(3),
+    IN pDataValidade CHAR(5) -- Novo parâmetro para DataValidade
 )
 BEGIN
     -- Verificar se o PedidoId informado existe na tabela tbPedido
@@ -579,14 +581,15 @@ BEGIN
     -- Inserir na tabela tbPagamento
     INSERT INTO tbPagamento (
         PedidoId, ValorPago, DataPagamento, StatusPagamento,
-        TipoPagamento, NomeCartao, BandeiraCartao, NumeroCartao, cvv
+        TipoPagamento, NomeCartao, BandeiraCartao, NumeroCartao, CVV, DataValidade
     ) VALUES (
         pPedidoId, pValorPago, pDataPagamento, pStatusPagamento,
-        pTipoPagamento, pNomeCartao, pBandeiraCartao, pNumeroCartao, pCVV
+        pTipoPagamento, pNomeCartao, pBandeiraCartao, pNumeroCartao, pCVV, pDataValidade
     );
 END //
 
 DELIMITER ;
+
 
 
 
@@ -599,7 +602,8 @@ CALL spInsertPagamento(
     'João Silva',          -- NomeCartao
     'Visa',                -- BandeiraCartao
     1234567812345678,      -- NumeroCartao
-    123                   -- CVV
+    123,                   -- CVV
+    '20/11'			   -- validade
 );
 
 DELIMITER $$
